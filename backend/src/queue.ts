@@ -50,16 +50,19 @@ class Queue{
         return removed_node;
     }     
 
-    print(){
+    toArray(): string[] {
         let current_node = this.head;
-        console.log("HEAD: ");
-        console.log("[");
+        let items : string[] = []
         while(Object.keys(current_node).length != 0){ //Object is not empty
-            console.log(String(current_node.code)+ ", ");
+            items.push(current_node.code)
             current_node = current_node.next;
         }
-        console.log("]: TAIL");
-        console.log("\n")
+        console.log(items)
+        return items
+    }
+
+    getHead():Password{
+        return this.head
     }
 
 

@@ -38,5 +38,24 @@ function chamarSenha(preferencial:boolean){
         return filaNormal.remove()
     }
 }
+
+function listarSenhas(preferencial:boolean){
+    if(preferencial){
+        let current_node = filaPreferencial.getHead();
+        while(Object.keys(current_node).length != 0){ //Object is not empty
+            console.log(current_node.code)// adaptar isso para fazer a lista no front
+            current_node = current_node.next;
+        }
+    }else{
+        let current_node = filaNormal.getHead();
+        while(Object.keys(current_node).length != 0){ //Object is not empty
+            console.log(current_node.code)// adaptar isso para fazer a lista no front
+            current_node = current_node.next;
+        }
+    }
+    
+}
+
+
 pegarSenha(true,"agendamento")
-filaPreferencial.print()
+filaPreferencial.toArray()
