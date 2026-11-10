@@ -1,16 +1,123 @@
-.choice-screen{
+.header {
+    width: 100%;
+    padding: 1rem;
+    background-color: rgb(139, 209, 230);
+}
+
+main {
+    margin: 3rem;
+}
+
+.main-container{
+    display: flex;
+    flex-direction: row;
+    gap: 4rem;
+    height: 30rem;
+}
+
+.main-container h1{
+    font-size: 1.8rem;
+}
+
+.choice-back{
+    height: 32rem;
+    padding: 0.8rem;
+    border-radius: 1rem;
+    background-color: #415385;
+    border: 0.18rem solid #101654;
+}
+
+.choice-screen {
     display: flex;
     flex-direction: column;
     width: 20rem;
-    height: 10rem;
+    height: 25rem;
     padding: 1rem;
-    border-radius: 0.5rem;
+    border-radius: 1rem;
     justify-content: center;
     align-items: center;
     gap: 1rem;
-    background-color: rgb(98, 131, 160);
+    background-color: rgb(161, 199, 228);
+    border: 0.18rem solid #101654;
 }
 
-.choice-screen button{
-    height: 3rem;
+.choice-screen h3{
+    width: 15rem;
+    text-align: center;
+}
+
+.choice-screen h1{
+    font-size: 2.3rem;
+}
+
+.button-container{
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    width: 12rem;
+}
+
+.choice-screen button {
+    padding: 0.8rem;
+    border-radius: 0.8rem;
+    border: 0.18rem solid #101654;
+    font-weight: 500;
+    font-size: 1.1rem;
+    background-color: rgb(125, 206, 230);
+    cursor: pointer;
+}
+
+ul {
+    display: flex;
+    flex-direction: row;
+    gap: 0.6rem;
+    list-style-type: none;
+    padding: 0;
+    max-width: 88rem;
+    overflow: scroll;
+    padding-bottom: 0.8rem;
+}
+
+.queue-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-width: 10rem;
+    padding: 0.8rem;
+    border-radius: 0.8rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    background-color: rgb(116, 205, 216);
+    border: 0.18rem solid #101654;
+}
+
+.queue-item p{
+    margin: 0;
+}
+
+.room-desk-container{
+    display: flex;
+    gap: 3rem;
+}
+
+.tv-bg{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 31rem;
+    height: 16.8rem;
+    padding: 0.8rem;
+    border-radius: 1rem;
+    background-color: rgb(86, 125, 158);
+    border: 0.18rem solid #101654;
+}
+
+.tv-main{
+    width: 30rem;
+    height: 15rem;
+    padding: 2rem;
+    border-radius: 0.8rem;
+    background-color: rgb(171, 220, 241);
+    border: 0.18rem solid #101654;
 }
