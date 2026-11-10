@@ -1,41 +1,60 @@
 import { useState } from "react";
 import "./App.css";
 import atendenteSprite from "./assets/atendente-idle.png";
+import { chamarSenha, listarSenhas, pegarSenha } from ".";
+import Header from "./components/header/Header";
 
-type ServiceType = "servico" | "exame" | "atendimento";
+type ServiceType = "agendamento" | "consulta" | "exame";
 type NextScreenType = "servico" | "atendimento" | "senha";
 
-interface NewPasswordType {
-  serviceType: ServiceType;
-  isPreferential: boolean;
-}
-
 export default function App() {
-  const [fila, setFila] = useState(["NF093"]);
-  const [senhaNova, setSenhaNova] = useState<NewPasswordType>({
-    serviceType: "servico",
-    isPreferential: false,
-  });
+  const [fila, setFila] = useState<(string | undefined)[]>();
+  const [filaPreferencial, setFilaPreferencial] = useState<boolean>(true); //mostrar fila normal ou preferencial (boolean para poupar dados)
+
+  const [listaChamados, setListaChamados] = useState<Array<string>>([]);
+
   const [senhaOficial, setSenhaOficial] = useState<string>("");
   const [proximaTela, setProximaTela] = useState<NextScreenType>("servico");
 
-  function mudarTela(proximaTela: NextScreenType) {
+  let senhaPreferencial: boolean = false;
+  let tipoSenha: ServiceType | undefined = undefined;
+
+  function mudarTela(
+    proximaTela: NextScreenType,
+    preferencial?: boolean,
+    tipo?: ServiceType,
+  ) {
+    if (proximaTela == "atendimento") {
+      tipoSenha = tipo || "consulta";
+    }
     if (proximaTela == "senha") {
+      senhaPreferencial = preferencial || senhaPreferencial;
       getSenha();
     }
+
     setProximaTela(proximaTela);
   }
 
-  async function getSenha() {
-    setSenhaOficial("NF890");
-    setFila([...fila, "NF890"]);
+  function showFila(preferencial: boolean): void {
+    setFilaPreferencial(preferencial);
+    setFila(listarSenhas(preferencial));
+  }
+
+  function getSenha(): void {
+    setSenhaOficial(pegarSenha(senhaPreferencial, tipoSenha ?? "exame"));
+    setFila(listarSenhas(filaPreferencial));
 
     setTimeout(() => mudarTela("servico"), 5000);
   }
 
+  function callSenha(): void {
+    setListaChamados([...listaChamados, chamarSenha().code]);
+    setFila(listarSenhas(filaPreferencial));
+  }
+
   return (
     <>
-      <div className="header">Header</div>
+      <Header />
       <main>
         <div className="main-container">
           <div className="choice-back">
@@ -44,14 +63,24 @@ export default function App() {
                 <>
                   <h3>Escolha o tipo de serviço</h3>
                   <div className="button-container">
-                    <button onClick={() => mudarTela("atendimento")}>
-                      Serviço
+                    <button
+                      onClick={() =>
+                        mudarTela("atendimento", false, "agendamento")
+                      }
+                    >
+                      Agendamento
                     </button>
-                    <button onClick={() => mudarTela("atendimento")}>
+                    <button
+                      onClick={() =>
+                        mudarTela("atendimento", false, "consulta")
+                      }
+                    >
+                      Consulta
+                    </button>
+                    <button
+                      onClick={() => mudarTela("atendimento", false, "exame")}
+                    >
                       Exame
-                    </button>
-                    <button onClick={() => mudarTela("atendimento")}>
-                      Atendimento
                     </button>
                   </div>
                 </>
@@ -59,10 +88,10 @@ export default function App() {
                 <>
                   <h3>Escolha o tipo de atendimento</h3>
                   <div className="button-container">
-                    <button onClick={() => mudarTela("senha")}>
+                    <button onClick={() => mudarTela("senha", false)}>
                       Atendimento Normal
                     </button>
-                    <button onClick={() => mudarTela("senha")}>
+                    <button onClick={() => mudarTela("senha", true)}>
                       Atendimento Preferencial
                     </button>
                   </div>
@@ -77,32 +106,72 @@ export default function App() {
           </div>
 
           <div>
-            <h1>Fila de atendimento</h1>
+            <div className="queue-title">
+              <h1>Fila de atendimento</h1>
+              <div className="title-button-container">
+                <button
+                  onClick={() => showFila(false)}
+                  className={
+                    filaPreferencial
+                      ? "queue-type-button"
+                      : "queue-type-button selected"
+                  }
+                >
+                  Normal
+                </button>
+                <button
+                  onClick={() => showFila(true)}
+                  className={
+                    filaPreferencial
+                      ? "queue-type-button selected"
+                      : "queue-type-button"
+                  }
+                >
+                  Preferencial
+                </button>
+              </div>
+            </div>
+            <br />
             Início
-            <ul>
-              {fila.map((pessoa, idx) => (
-                <li className="queue-item" key={idx}>
-                  <p>Normal | Exame</p>
-                  <p>
-                    {idx + 1} -{pessoa}
-                  </p>
-                </li>
-              ))}
-            </ul>
+            {fila ? (
+              <ul>
+                {fila.map((pessoa, idx) => (
+                  <li className="queue-item" key={idx}>
+                    <p>Normal | Exame</p>
+                    <p>
+                      {idx + 1} - {pessoa}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <>
+                <p>Não há ninguém na fila.</p>
+                <br />
+              </>
+            )}
             <div className="room-desk-container">
               <div className="tv-bg">
                 <div className="tv-main">
-                  Senha: NF093 <br/><br/>
-                  Últimas senhas<br/>
-                  NE723 | PA091 | PA091 | NE723 | PA091 
+                  <h3>Chamando: {listaChamados[listaChamados.length - 1]}</h3>
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  Últimas senhas
+                  <br />
+                  {listaChamados.map((senha, idx) => (
+                    <span key={idx}>{senha}</span>
+                  ))}
                 </div>
               </div>
-              <button>Chamar próximo da fila</button>
-              <img src={atendenteSprite} height={270}/>
+              <button onClick={callSenha}>Chamar próximo da fila</button>
+              <img src={atendenteSprite} height={270} />
             </div>
           </div>
         </div>
       </main>
+      <div className="footer">Desenvolvido por <br/> Darcy Salmazzo e Júlia Rodrigues</div>
     </>
   );
 }
